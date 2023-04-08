@@ -1,0 +1,17 @@
+{
+    "input": {
+        "format": "x11grab",
+        "framerate": 30,
+        "video_device": ":0.0",
+        "video_size": "1080x720"
+    },
+    "output": {
+        "video_codec": "libx264",
+        "preset": "ultrafast",
+        "crf": 0,
+        "loglevel": "error"
+    },
+    "database": {
+        "path": "recording.db"
+    }
+}

@@ -32,6 +32,9 @@ DEFAULT_CONFIG = {
         "crf": 0,
         "loglevel": "error",
     },
+    "database": {
+        "path": pathlib.Path("recording.db"),
+    },
 }
 
 

@@ -13,21 +13,21 @@ repos:
         args: [ "--django" ]
       - id: trailing-whitespace
   - repo: https://github.com/psf/black
-    rev: 22.6.0
+    rev: 23.3.0
     hooks:
     - id: black
       exclude: \.py-tpl$|^.*\b(migrations)\b.*$
   - repo: https://github.com/PyCQA/isort
-    rev: 5.10.1
+    rev: 5.12.0
     hooks:
       - id: isort
         exclude: \.py-tpl$|^.*\b(migrations)\b.*$
   - repo: https://github.com/PyCQA/flake8
-    rev: 3.9.2
+    rev: 6.0.0
     hooks:
       - id: flake8
   - repo: https://github.com/pycqa/bandit
-    rev: 1.6.2
+    rev: 1.7.5
     hooks:
       - id: bandit
         args: ['-iii', '-ll']

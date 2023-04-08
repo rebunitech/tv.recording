@@ -4,17 +4,18 @@ Configuration file for tv_recording
 
 import json
 import logging
+import os
 import pathlib
 from typing import Any, Dict, List, Union
 
 from Xlib import display
-from Xlib.error import DisplayNameError
 
-try:
-    d = display.Display(":0.0")
+disp = os.environ.get("DISPLAY")
+if disp is not None:
+    d = display.Display(disp)
     s = d.screen()
     max_resolution = f"{s.width_in_pixels}x{s.height_in_pixels}"
-except DisplayNameError:
+else:
     max_resolution = "1280x720"
 
 

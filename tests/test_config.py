@@ -1,19 +1,20 @@
 import json
+import os
 import pathlib
 import sys
 import unittest
 
 from Xlib import display
-from Xlib.error import DisplayNameError
 
 sys.path.append("..")
 from tv_recording.config import Config  # noqa: E402
 
-try:
-    d = display.Display(":0.0")
+disp = os.environ.get("DISPLAY")
+if disp is not None:
+    d = display.Display(disp)
     s = d.screen()
     max_resolution = f"{s.width_in_pixels}x{s.height_in_pixels}"
-except DisplayNameError:
+else:
     max_resolution = "1280x720"
 
 

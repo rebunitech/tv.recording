@@ -34,6 +34,9 @@ class TestConfig(unittest.TestCase):
                 "crf": 0,
                 "loglevel": "error",
             },
+            "database": {
+                "path": pathlib.Path("recording.db"),
+            },
         }
         self.assertEqual(config.config, expected)
 

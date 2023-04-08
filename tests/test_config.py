@@ -1,16 +1,16 @@
 import json
 import pathlib
-import re
-import subprocess
 import sys
 import unittest
+
+from Xlib import display
 
 sys.path.append("..")
 from tv_recording.config import Config  # noqa: E402
 
-max_resolution = re.search(
-    r"\s(\d+x\d+)\s", str(subprocess.check_output(["xrandr"]))
-).group(1)
+d = display.Display()
+s = d.screen()
+max_resolution = f"{s.width_in_pixels}x{s.height_in_pixels}"
 
 
 class TestConfig(unittest.TestCase):

@@ -5,13 +5,13 @@ Configuration file for tv_recording
 import json
 import logging
 import pathlib
-import re
-import subprocess
 from typing import Any, Dict, List, Union
 
-max_resolution = re.search(
-    r"\s(\d+x\d+)\s", str(subprocess.check_output(["xrandr"]))
-).group(1)
+from Xlib import display
+
+d = display.Display()
+s = d.screen()
+max_resolution = f"{s.width_in_pixels}x{s.height_in_pixels}"
 
 
 DEFAULT_CONFIG = {

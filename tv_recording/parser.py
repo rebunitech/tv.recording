@@ -9,8 +9,6 @@ from typing import List
 
 from tv_recording import __version__
 
-WORK_DIR = pathlib.Path(__file__).parent
-
 
 def get_parser() -> argparse.ArgumentParser:
     """
@@ -40,16 +38,16 @@ def get_parser() -> argparse.ArgumentParser:
         "-c",
         "--config",
         type=pathlib.Path,
-        default=WORK_DIR / "config" / "config.json",
         help="set config file path",
     )
     parser.add_argument(
         "-o",
         "--output",
         type=pathlib.Path,
-        default=WORK_DIR / "data",
+        required=True,
         help="set data directory path",
     )
+
     return parser
 
 

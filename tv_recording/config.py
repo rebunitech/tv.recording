@@ -96,8 +96,8 @@ class Config:
         config = {
             **DEFAULT_CONFIG["input"],
             **DEFAULT_CONFIG["output"],
-            **self.config["input"],
-            **self.config["output"],
+            **self.config.get("input", {}),
+            **self.config.get("output", {}),
         }
         for key, value in config.items():
             args.append(f"-{relative_commands.get(key, key)}")

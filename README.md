@@ -5,12 +5,12 @@ Pure Python script to record TV stations from screen capture
 ## Requirements
 
 * Python 3.6+
-* ffmpeg
+* [ffmpeg](https://ffmpeg.org/)
 
 ## Usage
 
 ```bash
-tv-station-media-recorder --help
+tv-record --help
 ```
 
 ## Development

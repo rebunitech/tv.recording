@@ -8,12 +8,13 @@ import pathlib
 from typing import Any, Dict, List, Union
 
 from Xlib import display
+from Xlib.error import DisplayNameError
 
 try:
     d = display.Display(":0.0")
     s = d.screen()
     max_resolution = f"{s.width_in_pixels}x{s.height_in_pixels}"
-except display.DisplayNameError:
+except DisplayNameError:
     max_resolution = "1280x720"
 
 

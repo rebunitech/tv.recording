@@ -9,9 +9,12 @@ from typing import Any, Dict, List, Union
 
 from Xlib import display
 
-d = display.Display()
-s = d.screen()
-max_resolution = f"{s.width_in_pixels}x{s.height_in_pixels}"
+try:
+    d = display.Display(":0.0")
+    s = d.screen()
+    max_resolution = f"{s.width_in_pixels}x{s.height_in_pixels}"
+except display.DisplayNameError:
+    max_resolution = "1280x720"
 
 
 DEFAULT_CONFIG = {

@@ -8,9 +8,14 @@ from Xlib import display
 sys.path.append("..")
 from tv_recording.config import Config  # noqa: E402
 
-d = display.Display()
-s = d.screen()
-max_resolution = f"{s.width_in_pixels}x{s.height_in_pixels}"
+# Xlib.error.DisplayNameError: Can't open display ":0.0"
+
+try:
+    d = display.Display(":0.0")
+    s = d.screen()
+    max_resolution = f"{s.width_in_pixels}x{s.height_in_pixels}"
+except display.DisplayNameError:
+    max_resolution = "1280x720"
 
 
 class TestConfig(unittest.TestCase):

@@ -1,5 +1,5 @@
 from .cli import CLI
-from .parser import get_args, get_logger
+from .parser import get_logger, get_parser_and_args
 
 
 def main():
@@ -7,13 +7,13 @@ def main():
     Main entry point
     """
     # Parse command line arguments
-    args = get_args()
+    args, parser = get_parser_and_args()
 
     # Create logger
     logger = get_logger(args.log_level)
 
     # Create a new instance of the app
-    cli = CLI(args, logger)
+    cli = CLI(args, parser, logger)
 
     # Run the app
-    cli.run()
+    cli.execute()

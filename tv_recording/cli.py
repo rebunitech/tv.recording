@@ -53,6 +53,51 @@ class CLI:
             datetime.datetime.now().timestamp(),
         )
 
+    def manage(self):
+        """
+        Manage recordings.
+        """
+        self.logger.debug("tv_recording.cli.CLI.manage()")
+
+        if self.args.show_active:
+            self.list()
+        elif self.args.stop:
+            self.stop()
+        else:
+            self.parser.print_help()
+
+    def list(self):
+        """
+        List recordings.
+        """
+        self.logger.debug("tv_recording.cli.CLI.list()")
+        recordings = self.db.get_active_recordings()
+
+        print("-" * 82)
+        print(
+            "ID".center(5),
+            "PID".center(7),
+            "Path".center(35),
+            "Start Time".center(20),
+            "Status".center(10),
+        )
+        print("-" * 82)
+        if not recordings:
+            print("No active recordings.".center(82))
+        else:
+            for recording in recordings:
+                file_name = Path(recording["path"]).name
+                print(
+                    "",
+                    str(recording["id"]).ljust(5),
+                    str(recording["pid"]).ljust(7),
+                    file_name.ljust(35),
+                    datetime.datetime.fromtimestamp(recording["start_time"])
+                    .strftime("%Y-%m-%d %H:%M:%S")
+                    .ljust(20),
+                    "Recording".ljust(10),
+                )
+        print("-" * 82)
         try:
             # Wait for the process to finish
             process.communicate()

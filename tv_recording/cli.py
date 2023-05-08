@@ -98,15 +98,46 @@ class CLI:
                     "Recording".ljust(10),
                 )
         print("-" * 82)
+    def get_video_duration(self, filename):
         try:
-            # Wait for the process to finish
-            process.communicate()
-        except KeyboardInterrupt:
-            # If the user presses Ctrl+C, kill the process
-            process.kill()
-            process.wait()
+            result = subprocess.run(
+                [
+                    "ffprobe",
+                    "-i",
+                    filename,
+                    "-show_entries",
+                    "format=duration",
+                    "-v",
+                    "quiet",
+                    "-of",
+                    "csv=p=0",
+                ],
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+            duration = float(result.stdout)
+            return duration
+        except subprocess.CalledProcessError as e:
+            self.logger.info("Error getting video duration: %s", e)
+            return None
 
-        # Set end time in database
+    def _set_end_time(self, recording):
+        """
+        Set end time in database.
+        """
+
+        start_time = recording["start_time"]
+        path = recording["path"]
+        if not Path(path).exists():
+            self.logger.info("File %s does not exist.", path)
+            return
+
+        file_length = self.get_video_duration(path)
+        self.logger.debug("File length: %s", file_length)
+        self.logger.debug("Start time: %s", start_time)
+        self.logger.debug("End time: %s", start_time + file_length)
+
         self.db.set_end_time(
             path.absolute().as_posix(),
             datetime.datetime.now().timestamp(),

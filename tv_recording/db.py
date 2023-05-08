@@ -78,3 +78,16 @@ class Database:
             (end_time, path),
         )
         self.db.commit()
+
+    def get_active_recordings(self):
+        """
+        Get the active recording.
+        """
+        self.logger.debug("tv_recording.db.Database.get_active_recording()")
+        return self.db.execute(
+            """
+            SELECT *
+            FROM recordings
+            WHERE end_time IS NULL
+            """
+        ).fetchall()

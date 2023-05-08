@@ -28,6 +28,8 @@ class Database:
             """
             CREATE TABLE IF NOT EXISTS recordings (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                pid INTEGER NOT NULL,
+                parent_pid INTEGER,
                 path TEXT NOT NULL,
                 start_time INTEGER NOT NULL,
                 end_time INTEGER,
@@ -39,23 +41,27 @@ class Database:
 
     def add_recording(
         self,
+        pid: int,
+        parent_pid: int,
         path: Union[str, pathlib.Path],
         start_time: int,
     ):
         """
         Add a recording to the database.
         """
-        self.logger.info("tv_recording.db.Database.add_recording()")
+        self.logger.debug("tv_recording.db.Database.add_recording()")
         path = pathlib.Path(path).absolute().as_posix()
         self.db.execute(
             """
             INSERT INTO recordings (
+                pid,
+                parent_pid,
                 path,
                 start_time
             )
-            VALUES (?, ?)
+            VALUES (?, ?, ?, ?)
             """,
-            (path, start_time),
+            (pid, parent_pid, path, start_time),
         )
         self.db.commit()
 
@@ -67,7 +73,7 @@ class Database:
         """
         Set the end time for a recording.
         """
-        self.logger.info("tv_recording.db.Database.set_end_time()")
+        self.logger.debug("tv_recording.db.Database.set_end_time()")
         path = pathlib.Path(path).absolute().as_posix()
         self.db.execute(
             """

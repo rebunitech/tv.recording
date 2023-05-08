@@ -19,6 +19,11 @@ def get_parser() -> argparse.ArgumentParser:
         description="TV Station Media Recorder",
         epilog="",
     )
+
+    subparse = parser.add_subparsers(dest="command", required=True)
+    execusion_parse = subparse.add_parser("run")
+    management_parse = subparse.add_parser("manage")
+
     parser.add_argument(
         "-V",
         "--version",
@@ -30,33 +35,52 @@ def get_parser() -> argparse.ArgumentParser:
         "-l",
         "--log-level",
         type=str,
-        default="INFO",
+        default="ERROR",
         choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
         help="set logging level",
     )
-    parser.add_argument(
+    execusion_parse.add_argument(
         "-c",
         "--config",
         type=pathlib.Path,
         help="set config file path",
     )
-    parser.add_argument(
+
+    execusion_parse.add_argument(
         "-o",
         "--output",
         type=pathlib.Path,
         required=True,
         help="set data directory path",
     )
+    management_parse.add_argument(
+        "--show-active",
+        action="store_true",
+        help="show active recordings",
+    )
+    # argument to stop a recording
+    management_parse.add_argument(
+        "--stop",
+        type=int,
+        help="stop a recording",
+    )
+    # argument to set end time of all recording in database
+    # if the recording is not active, but time is not set
+    management_parse.add_argument(
+        "--set-end-time",
+        action="store_false",
+        help="set end time of all recording in database",
+    )
 
     return parser
 
 
-def get_args(args: List[str] = None) -> argparse.Namespace:
+def get_parser_and_args(args: List[str] = None) -> argparse.Namespace:
     """
     Get arguments
     """
     parser = get_parser()
-    return parser.parse_args(args=args)
+    return (parser.parse_args(args=args), parser)
 
 
 def get_logger(log_level: str) -> logging.Logger:

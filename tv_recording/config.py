@@ -60,7 +60,7 @@ class Config:
         """
         Load configuration file.
         """
-        self.logger.info("tv_recording.config.Config.load()")
+        self.logger.debug("tv_recording.config.Config.load()")
         if self.config_file is not None:
             with open(self.config_file, "r") as file:
                 self.config = json.load(file)
@@ -71,7 +71,7 @@ class Config:
         """
         Get configuration value.
         """
-        self.logger.info("tv_recording.config.Config.get()")
+        self.logger.debug("tv_recording.config.Config.get()")
         if "." in key:
             keys = key.split(".")
             if keys[0] in self.config:
@@ -86,7 +86,7 @@ class Config:
         """
         Get configuration as ffmpeg arguments.
         """
-        self.logger.info("tv_recording.config.Config.get_as_ffmpeg_args()")
+        self.logger.debug("tv_recording.config.Config.get_as_ffmpeg_args()")
         relative_commands = {
             "format": "f",
             "video_device": "i",

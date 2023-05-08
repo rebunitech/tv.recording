@@ -139,6 +139,30 @@ class CLI:
         self.logger.debug("End time: %s", start_time + file_length)
 
         self.db.set_end_time(
-            path.absolute().as_posix(),
-            datetime.datetime.now().timestamp(),
-        )
+    def stop(self):
+        """
+        Stop a recording.
+        """
+        self.logger.debug("tv_recording.cli.CLI.stop()")
+        recording = self.db.get_by_id(self.args.stop)
+
+        if recording is None:
+            print(
+                "Stop failed. Recording not found, may be it is already "
+                "stopped."
+            )
+            return
+        try:
+            pid = recording["pid"]
+            process = psutil.Process(pid)
+            process.terminate()
+            process.wait()
+            print("Recording stopped.")
+        except psutil.NoSuchProcess as e:
+            print(e)
+            print(
+                "Stop failed. Recording not found, may be it is already "
+                "stopped."
+            )
+
+        self._set_end_time(recording)

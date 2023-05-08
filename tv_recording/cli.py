@@ -7,6 +7,8 @@ import logging
 import subprocess
 from pathlib import Path
 
+import psutil
+
 from .config import Config
 from .db import Database
 
@@ -17,22 +19,34 @@ class CLI:
     """
 
     def __init__(
-        self, args: argparse.Namespace, logger: logging.Logger = None
+        self, args: argparse.Namespace, parser, logger: logging.Logger = None
     ):
         """
         Construct a CLI.
         """
         self.args = args
+        self.parser = parser
         self.logger = logger or logging.getLogger(__name__)
-        self.config = Config(args.config, logger)
         self.db = Database(logger)
+
+    def execute(self):
+        """
+        Execute the CLI.
+        """
+        self.logger.debug("tv_recording.cli.CLI.execute()")
+        if self.args.command == "manage":
+            self.manage()
+        elif self.args.command == "run":
+            self.run()
 
     def run(self):
         """
         Main entry point.
         """
-        self.logger.info("tv_recording.cli.CLI.run()")
+        self.config = Config(self.args.config, self.logger)
+        self.logger.debug("tv_recording.cli.CLI.run()")
         current_time = datetime.datetime.now()
+
         path = Path(
             current_time.strftime("%Y-%m-%d_%H-%M-%S")
             + "_"
@@ -42,13 +56,24 @@ class CLI:
             "ffmpeg",
             *self.config.ffmpeg_args,
             path.absolute().as_posix(),
+            "2>&1 & echo $!",
         ]
-        process = subprocess.Popen(command)
 
-        logging.info("Recording to %s", path.absolute().as_posix())
+        logging.debug("Command: %s", " ".join(command))
+        # Create STDOUT pipe
 
-        # Add recording to database
+        process = subprocess.Popen(
+            ["/bin/sh", "-c", " ".join(command)], stdout=subprocess.PIPE
+        )
+        subprocess_pid = int(process.stdout.readline())
+
+        logging.debug("Recording to %s", path.absolute().as_posix())
+        logging.debug("Process ID: %s", subprocess_pid)
+        logging.debug("Parent Process ID: %s", process.pid)
+
         self.db.add_recording(
+            subprocess_pid,
+            process.pid,
             path.absolute().as_posix(),
             datetime.datetime.now().timestamp(),
         )
@@ -98,6 +123,7 @@ class CLI:
                     "Recording".ljust(10),
                 )
         print("-" * 82)
+
     def get_video_duration(self, filename):
         try:
             result = subprocess.run(
@@ -139,6 +165,10 @@ class CLI:
         self.logger.debug("End time: %s", start_time + file_length)
 
         self.db.set_end_time(
+            path,
+            start_time + file_length,
+        )
+
     def stop(self):
         """
         Stop a recording.

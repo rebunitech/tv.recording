@@ -91,3 +91,17 @@ class Database:
             WHERE end_time IS NULL
             """
         ).fetchall()
+
+    def get_by_id(self, id: int):
+        """
+        Get a recording by ID.
+        """
+        self.logger.debug("tv_recording.db.Database.get_by_id()")
+        return self.db.execute(
+            """
+            SELECT *
+            FROM recordings
+            WHERE id = ?
+            """,
+            (id,),
+        ).fetchone()
